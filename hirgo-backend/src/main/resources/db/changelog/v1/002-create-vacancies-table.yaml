@@ -1,0 +1,142 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-vacancies-table
+      author: magsud
+      changes:
+        - createTable:
+            tableName: vacancies
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: posted_at
+                  type: timestamp
+              - column:
+                  name: salary
+                  type: bigint
+              - column:
+                  name: application_deadline
+                  type: timestamp
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: experience_level_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location_type_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employment_type_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: work_schedule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: education_level_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language_skills_ids
+                  type: bigint[]
+              - column:
+                  name: company_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              # Embedded Description fields
+              - column:
+                  name: responsibilities
+                  type: text[]
+              - column:
+                  name: education
+                  type: text[]
+              - column:
+                  name: experience
+                  type: text[]
+              - column:
+                  name: required_skills
+                  type: text[]
+              - column:
+                  name: preferred_skills
+                  type: text[]
+        - addForeignKeyConstraint:
+            baseColumnNames: category_id
+            baseTableName: vacancies
+            constraintName: fk_vacancy_category
+            referencedColumnNames: id
+            referencedTableName: categories
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: experience_level_id
+            constraintName: fk_vacancies_experience_level
+            referencedTableName: lookups
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: location_type_id
+            constraintName: fk_vacancies_location_type
+            referencedTableName: lookups
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: employment_type_id
+            constraintName: fk_vacancies_employment_type
+            referencedTableName: lookups
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: education_level_id
+            constraintName: fk_vacancies_education_level
+            referencedTableName: lookups
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: company_id
+            constraintName: fk_vacancies_company
+            referencedTableName: companies
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - createIndex:
+            indexName: idx_vacancy_category
+            tableName: vacancies
+            columns:
+              - column:
+                  name: category_id
+        - createIndex:
+            indexName: idx_vacancy_company
+            tableName: vacancies
+            columns:
+              - column:
+                  name: company_id
+        - createIndex:
+            indexName: idx_vacancy_deadline
+            tableName: vacancies
+            columns:
+              - column:
+                  name: application_deadline

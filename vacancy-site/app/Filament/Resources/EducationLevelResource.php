@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\EducationLevelResource\Pages;
+use App\Models\Lookup;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
+
+class EducationLevelResource extends Resource
+{
+    protected static ?string $model = Lookup::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Təhsil Səviyyələri';
+    protected static ?string $navigationGroup = 'Məzmun İdarəsi';
+
+    public static function getModelLabel(): string
+    {
+        return 'Təhsil Səviyyəsi';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Təhsil Səviyyələri';
+    }
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Təhsil Səviyyəsi adı')
+                    ->required()
+                    ->maxLength(255)
+                    ->rules([
+                        'required',
+                        Rule::unique('lookups', 'name')
+                            ->where('type', 'EducationLevel')
+                    ])
+                    ->validationMessages([
+                        'unique' => 'Bu təhsil səviyyəsi adı artıq mövcuddur.',
+                        'required' => 'Təhsil səviyyəsi adı tələb olunur.',
+                    ]),
+
+                Forms\Components\Hidden::make('type')
+                    ->default('EducationLevel'),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Təhsil Səviyyəsi')
+                    ->searchable()
+                    ->sortable(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('type', 'EducationLevel');
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListEducationLevels::route('/'),
+            'create' => Pages\CreateEducationLevel::route('/create'),
+            'edit' => Pages\EditEducationLevel::route('/{record}/edit'),
+        ];
+    }
+}

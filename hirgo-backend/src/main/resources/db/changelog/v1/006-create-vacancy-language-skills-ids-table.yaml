@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-vacancy-language-skills-ids-table
+      author: magsud
+      changes:
+        - createTable:
+            tableName: vacancy_language_skills_ids
+            columns:
+              - column:
+                  name: vacancy_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: fk_vacancy_language_skills_ids_vacancy_id
+                    referencedTableName: vacancies
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: language_skills_ids
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: fk_vacancy_language_skills_ids_language_skill_id
+                    referencedTableName: lookups
+                    referencedColumnNames: id
+                    deleteCascade: true

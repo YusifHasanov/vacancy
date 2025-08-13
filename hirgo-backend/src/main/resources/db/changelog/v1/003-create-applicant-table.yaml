@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-applicant-table
+      author: magsud
+      changes:
+        - createTable:
+            tableName: applicants
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date_of_birth
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_picture_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: linked_in_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: github_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: resume_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: experience_level_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: education_level_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: language_skills_ids
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: work_schedule_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: expected_salary
+                  type: integer
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false

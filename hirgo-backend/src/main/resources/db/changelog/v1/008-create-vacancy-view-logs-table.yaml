@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-vacancy-view-logs-table
+      author: magsud
+      changes:
+        - createTable:
+            tableName: vacancy_view_logs
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vacancy_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+                    referencedTableName: vacancies
+                    referencedColumnNames: id
+                    foreignKeyName: fk_vacancy_view_logs_vacancy_id
+                    deleteCascade: true
+              - column:
+                  name: ip_hash
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: viewed_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: vacancy_view_logs
+            columnNames: vacancy_id, ip_hash
+            constraintName: uk_vacancy_view_logs_vacancy_ip 

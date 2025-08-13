@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: magsud
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS auth;
+        - createTable:
+            schemaName: auth
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: java.util.UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_non_expired
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_non_locked
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: credentials_non_expired
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false 

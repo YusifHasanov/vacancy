@@ -1,0 +1,88 @@
+# ---------------------------
+# Global ignores
+# ---------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+.idea/
+.vscode/
+node_modules/
+!.env.example
+
+# ---------------------------
+# Next.js / Node.js
+# ---------------------------
+# dependencies
+node_modules/
+# next build output
+.next/
+out/
+# testing
+coverage/
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# vercel output
+.vercel/
+
+# ---------------------------
+# Laravel / PHP
+# ---------------------------
+vendor/
+node_modules/
+public/storage
+storage/*.key
+.env
+Homestead.yaml
+Homestead.json
+/.vagrant
+.phpunit.result.cache
+composer.lock
+
+# Laravel cache
+bootstrap/cache/*
+storage/logs/*
+storage/framework/*
+storage/app/public/*
+
+# ---------------------------
+# Java / Spring Boot
+# ---------------------------
+target/
+build/
+out/
+.gradle/
+.mvn/
+**/mvnw
+**/mvnw.cmd
+**/.classpath
+**/.project
+**/.settings/
+**/.factorypath
+
+# Logs
+*.log
+*.out
+
+# IntelliJ / Eclipse
+*.iml
+*.ipr
+*.iws
+.idea/
+.project
+.classpath
+.settings/
+bin/
+
+# ---------------------------
+# OS files
+# ---------------------------
+.DS_Store
+ehthumbs.db
+Icon?
+Thumbs.db

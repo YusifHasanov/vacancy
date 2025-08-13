@@ -1,0 +1,72 @@
+databaseChangeLog:
+  # =====================================================================================
+  # CHANGE SET 1: 'resumes' tablosunu oluşturur.
+  # Açıklama: CV verilerini saklamak için ana tablo.
+  # =====================================================================================
+  - changeSet:
+      id: create-resumes-table # ID'ler daha açıklayıcı hale getirildi.
+      author: yusif
+      changes:
+        - createTable:
+            tableName: resumes
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true # Otomatik artan ID için eklendi.
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID # PostgreSQL için standart UUID tipi.
+                  constraints:
+                    nullable: false
+                    # Not: Gerçek bir uygulamada buraya bir foreign key constraint eklemek iyi bir pratik olacaktır.
+                    # foreignKeyName: fk_resumes_user_id
+                    # references: users(id)
+              - column:
+                  name: template_id
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: jsonb # PostgreSQL için verimli JSON saklama tipi.
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz # Zaman dilimi bilgisiyle (timezone) birlikte timestamp.
+                  defaultValueComputed: "now()" # Kayıt oluşturulduğunda otomatik olarak şu anki zamanı atar.
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  defaultValueComputed: "now()" # Kayıt oluşturulduğunda ve güncellendiğinde bu alanı tetikleyici (trigger) ile güncellemek daha iyi bir pratiktir.
+                  constraints:
+                    nullable: false
+
+  # =====================================================================================
+  # CHANGE SET 2: 'resumes' tablosuna performans için indeksler ekler.
+  # =====================================================================================
+  - changeSet:
+      id: add-indexes-to-resumes # Açıklayıcı ID.
+      author: yusif
+      changes:
+        # 1. user_id üzerinde sık yapılacak sorgular için standart B-Tree indeksi.
+        - createIndex:
+            indexName: idx_resumes_user_id
+            tableName: resumes
+            columns:
+              - column:
+                  name: user_id
+
+        # 2. İsteğiniz üzerine, 'data' (jsonb) kolonu için GIN indeksi ham SQL ile oluşturuluyor.
+        # Bu, JSONB içindeki anahtar/değer çiftlerinde verimli arama yapmayı sağlar.
+        - sql:
+            comment: "JSONB verileri üzerinde verimli arama için GIN indeksi oluşturur."
+            sql: CREATE INDEX idx_resumes_data_gin ON resumes USING GIN (data);
+            # Geri alma (rollback) işlemi için indeksi silme komutu eklemek çok önemlidir.
+            rollback: DROP INDEX idx_resumes_data_gin;

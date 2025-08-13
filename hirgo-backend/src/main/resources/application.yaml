@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: hirgo-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hirgo
+    username: postgres
+    password: 123456789
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: ${rsa.public-key}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+    drop-first: false
+
+server:
+  port: 8080
+
+jwt:
+  access-token:
+    expiration: 86400000 # 1 day in milliseconds
+  refresh-token:
+    expiration: 604800000 # 7 days in milliseconds
+  id-token:
+    expiration: 86400000 # 1 day in milliseconds
+
+rsa:
+  private-key: classpath:app.key
+  public-key: classpath:app.pub
