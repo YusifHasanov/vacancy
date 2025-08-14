@@ -202,7 +202,7 @@ const VacanciesPage = () => {
             }
             console.log(`Page ${currentPage}: Loaded ${initialVacancies?.length || 0} vacancies`)
         }
-    }, [initialVacancies, currentPage, allVacancies])
+    }, [initialVacancies, currentPage])
 
     // Reset hasMore when totalPages changes
     useEffect(() => {
