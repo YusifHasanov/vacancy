@@ -57,7 +57,7 @@ const baseQueryWithReauth: BaseQueryFn<
     FetchBaseQueryError
 > = async (args, api, extraOptions) => {
     // Try the initial query
-    let result = await baseQuery(args, api, extraOptions);
+    const result = await baseQuery(args, api, extraOptions);
 
     // If we get a 401 Unauthorized response, try to refresh the token
     if (result.error && result.error.status === 401) {

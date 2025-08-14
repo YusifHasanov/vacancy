@@ -14,6 +14,7 @@ export default function VacanciesPage() {
     const [filteredJobs, setFilteredJobs] = useState<Job[]>([])
 
     const handleFilterChange = (key: string, value: string) => {
+        console.log(key, value)
         setFilteredJobs([])
     }
 

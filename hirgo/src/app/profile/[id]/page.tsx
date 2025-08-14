@@ -7,7 +7,7 @@ function getApplicantData(id: string): Applicant | null {
   // In a real app, you would fetch this from your database/API
   // For now, returning mock data, ignoring the id for simplicity in this example
   console.log(`Fetching data for applicant ID: ${id}`);
-  
+
   // Simulate API delay
 //   await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -30,14 +30,14 @@ function getApplicantData(id: string): Applicant | null {
     createdAt: "2024-01-10T10:00:00Z",
     updatedAt: "2024-05-15T14:30:00Z",
   };
-  
-  if (id === "not-found") return null; 
+
+  if (id === "not-found") return null;
 
   return mockApplicant;
 }
 
 
-export default async function ApplicantPage({ params }: { params: { id: string } }) {
+export default async function ApplicantPage({ params }: any) {
   const applicant = getApplicantData(params.id);
 
   if (!applicant) {

@@ -19,9 +19,7 @@ import {
 } from "@/components/ui/popover"
 import {motion} from 'framer-motion'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-const formatDate = (date) => {
+const formatDate = (date: any) => {
     return date ? format(date, "PPP") : "Tarix seç";
 };
 
@@ -74,7 +72,6 @@ export default function AddVacancy() {
     const {register, handleSubmit, control, reset} = useForm()
     const [isSalaryByAgreement, setIsSalaryByAgreement] = useState(false)
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     const onSubmit = (data) => {
         console.log(data)
@@ -209,7 +206,6 @@ export default function AddVacancy() {
                                                     id="salaryByAgreement"
                                                     checked={isSalaryByAgreement}
                                                     onCheckedChange={(checked) => {
-                                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                                         //@ts-expect-error
                                                         setIsSalaryByAgreement(checked)
                                                         if (checked) {

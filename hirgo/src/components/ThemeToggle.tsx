@@ -1,3 +1,4 @@
+// @ts-ignore
 import {useTheme} from "@/providers/ThemeProvider.tsx";
 import { Button } from "./ui/button";
 import React from "react";

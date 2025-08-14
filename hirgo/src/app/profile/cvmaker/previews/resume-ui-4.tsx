@@ -3,25 +3,15 @@ import {
     Mail,
     Phone,
     MapPin,
-    Facebook,
     Linkedin,
-    Instagram,
-    Twitter,
     Github,
-    Globe,
-    // Hobi ikonları
-    Music,
-    Dumbbell,
-    Plane,
-    Gamepad2,
-    Dices
 } from "lucide-react";
-import { useResumeStore } from "@/store/resumestore";
+import {useResumeStore} from "@/store/resumestore";
 
 // --- YARDIMCI BİLEŞENLER ---
 
 // Ana içerik için bölüm başlığı bileşeni
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({title, children}) => (
     <section className="mb-8">
         <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-gray-800 border-b border-gray-300 pb-2 mb-4">
             {title}
@@ -31,7 +21,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 );
 
 // Kenar çubuğu için bölüm başlığı bileşeni
-const SidebarSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+const SidebarSection: React.FC<{ title: string; children: React.ReactNode }> = ({title, children}) => (
     <section className="mb-8">
         <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-gray-800 border-b border-gray-300 pb-1 mb-4">
             {title}
@@ -41,11 +31,11 @@ const SidebarSection: React.FC<{ title: string; children: React.ReactNode }> = (
 );
 
 // Beceri/Dil için ilerleme çubuğu bileşeni (Yeniden adlandırıldı ve stil güncellendi)
-const LevelBar: React.FC<{ name: string; level: number }> = ({ name, level }) => (
+const LevelBar: React.FC<{ name: string; level: number }> = ({name, level}) => (
     <div className="mb-3">
         <p className="text-sm font-medium text-gray-700 break-words">{name}</p>
         <div className="h-1.5 w-full bg-gray-200 mt-1 rounded-full">
-            <div className="h-1.5 bg-gray-800 rounded-full" style={{ width: `${level}%` }}></div>
+            <div className="h-1.5 bg-gray-800 rounded-full" style={{width: `${level}%`}}></div>
         </div>
     </div>
 );
@@ -53,7 +43,7 @@ const LevelBar: React.FC<{ name: string; level: number }> = ({ name, level }) =>
 // --- ANA CV BİLEŞENİ ---
 
 const ResumeUI4: React.FC = () => {
-    const { resumeData: data } = useResumeStore();
+    const {resumeData: data} = useResumeStore();
 
     const hasLinks = data.contact.linkedin || data.contact.github || data.contact.website || data.contact.facebook || data.contact.instagram || data.contact.twitter;
 
@@ -82,7 +72,8 @@ const ResumeUI4: React.FC = () => {
                         className="w-28 h-28 rounded-full object-cover flex-shrink-0"
                     />
                 ) : (
-                    <div className="w-28 h-28 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
+                    <div
+                        className="w-28 h-28 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
                         <span className="text-3xl font-bold text-gray-400">
                             {(data.firstName?.[0] || 'A')}{(data.lastName?.[0] || 'W')}
                         </span>
@@ -116,7 +107,8 @@ const ResumeUI4: React.FC = () => {
                                     <div className="bg-black text-white p-2 flex-shrink-0">
                                         <Mail className="h-4 w-4"/>
                                     </div>
-                                    <span className="break-all text-sm text-gray-600 group-hover:text-black">{data.contact.email}</span>
+                                    <span
+                                        className="break-all text-sm text-gray-600 group-hover:text-black">{data.contact.email}</span>
                                 </a>
                             )}
                             {data.contact.address && (
@@ -134,15 +126,19 @@ const ResumeUI4: React.FC = () => {
                         <SidebarSection title="Links">
                             <div className="space-y-3 text-sm text-gray-600">
                                 {data.contact.linkedin && (
-                                    <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-black">
+                                    <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer"
+                                       className="flex items-center gap-3 hover:text-black">
                                         <Linkedin className="h-4 w-4 text-gray-700 flex-shrink-0"/>
-                                        <span className="break-all underline">{data.contact.linkedin.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/in\//, '')}</span>
+                                        <span
+                                            className="break-all underline">{data.contact.linkedin.replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/in\//, '')}</span>
                                     </a>
                                 )}
                                 {data.contact.github && (
-                                    <a href={data.contact.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-black">
+                                    <a href={data.contact.github} target="_blank" rel="noopener noreferrer"
+                                       className="flex items-center gap-3 hover:text-black">
                                         <Github className="h-4 w-4 text-gray-700 flex-shrink-0"/>
-                                        <span className="break-all underline">{data.contact.github.replace(/^(https?:\/\/)?(www\.)?github\.com\//, '')}</span>
+                                        <span
+                                            className="break-all underline">{data.contact.github.replace(/^(https?:\/\/)?(www\.)?github\.com\//, '')}</span>
                                     </a>
                                 )}
                                 {/* Diğer linkler (facebook, twitter vb.) de buraya aynı mantıkla eklenebilir */}
@@ -209,7 +205,8 @@ const ResumeUI4: React.FC = () => {
                                     <div key={edu.id}>
                                         <h4 className="text-md font-bold text-gray-800 break-words">{edu.degree}, {edu.institution}</h4>
                                         <p className="text-sm italic text-gray-500 my-1 break-words">{edu.graduationYear}</p>
-                                        {edu.details && <p className="text-sm leading-relaxed text-gray-600 break-words">{edu.details}</p>}
+                                        {edu.details &&
+                                            <p className="text-sm leading-relaxed text-gray-600 break-words">{edu.details}</p>}
                                     </div>
                                 ))}
                             </div>

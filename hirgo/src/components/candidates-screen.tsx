@@ -349,7 +349,7 @@ function formatDate(dateString: string): string {
   try {
     const date = new Date(dateString)
     return `${date.getMonth() + 1}/${date.getDate()}`
-  } catch (e) {
+  } catch (e : any) {
     return dateString
   }
 }

@@ -20,7 +20,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useCategories } from "@/app/features/category"
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -33,9 +33,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useVacancy, useDeleteVacancy, useUpdateVacancy } from "@/app/features/vacancy/useVacancy"
-import { 
-  useEducationLevels, 
-  useEmploymentTypes, 
+import {
+  useEducationLevels,
+  useEmploymentTypes,
   useExperienceLevels,
   useWorkSchedules,
   useLocations,
@@ -90,17 +90,17 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const { categories, isLoading: isCategoriesLoading } = useCategories()
-  
+
   // Ensure we're rendering on client
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   // Get vacancy data using the hook
   const { vacancy, loading: isLoadingVacancy, error, refetch } = useVacancy(vacancyId)
   const { updateVacancy } = useUpdateVacancy()
   const { deleteVacancy, isDeleting } = useDeleteVacancy()
-  
+
   // Get lookup data
   const { lookups: educationLevels } = useEducationLevels();
   const { lookups: employmentTypes } = useEmploymentTypes();
@@ -156,7 +156,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
   // Fetch vacancy data on component mount
   useEffect(() => {
     console.log("[JobDetailsVacancyForm] Vacancy data updated", vacancy);
-    
+
     if (vacancy && !isLoadingVacancy) {
       try {
         // Parse the description if it's stored as JSON string
@@ -168,13 +168,13 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
         } catch (e) {
           console.error("Failed to parse description JSON:", e);
         }
-        
+
         // Parse the date string to a Date object
         let applicationDeadlineDate = new Date();
         if (vacancy.applicationDeadline) {
           applicationDeadlineDate = new Date(vacancy.applicationDeadline);
         }
-        
+
         // Map API values to form values
         const formValues = {
           title: vacancy.title || "",
@@ -195,7 +195,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
             preferredSkills: [""],
           }
         };
-        
+
         console.log("[JobDetailsVacancyForm] Updating form with values:", formValues);
         // Update form values
         form.reset(formValues);
@@ -208,7 +208,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
         });
       }
     }
-  }, [vacancy, isLoadingVacancy, form]);  // Removed dependencies that don't affect this process
+  }, [vacancy, isLoadingVacancy, form, toast]);  // Removed dependencies that don't affect this process
 
   // Form submission handler
   const onSubmit = async (data: FormValues) => {
@@ -225,7 +225,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
         workScheduleId: data.workScheduleId,
         employmentTypeId: data.employmentTypeId,
         educationLevelId: data.educationLevelId,
-        languageSkillsIds: data.languageSkillsIds,  
+        languageSkillsIds: data.languageSkillsIds,
         categoryId: data.categoryId,
         applicationDeadline: format(data.applicationDeadline, "yyyy-MM-dd'T'HH:mm:ss")
       };
@@ -238,7 +238,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
         title: "Success!",
         description: "Job vacancy has been successfully updated.",
       });
-      
+
       // Reload the vacancy data
       refetch();
     } catch (error) {
@@ -257,12 +257,12 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
   const handleDelete = async () => {
     try {
       await deleteVacancy(vacancyId);
-      
+
       toast({
         title: "Vacancy Deleted",
         description: "The job vacancy has been successfully deleted.",
       });
-      
+
       // Navigate back to vacancies list
       router.push("/dashboard/vacancies");
     } catch (error) {
@@ -521,7 +521,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                            {experienceLevels.map((level: any) => (
+                            {experienceLevels.map((level) => (
                                 <SelectItem key={level.id} value={level.id.toString()}>
                                   {level.name}
                                 </SelectItem>
@@ -551,7 +551,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {locations.map((type: any) => (
+                              {locations.map((type) => (
                                 <SelectItem key={type.id} value={type.id.toString()}>
                                   {type.name}
                                 </SelectItem>
@@ -581,7 +581,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {employmentTypes.map((type: any) => (
+                              {employmentTypes.map((type) => (
                                 <SelectItem key={type.id} value={type.id.toString()}>
                                   {type.name}
                                 </SelectItem>
@@ -611,7 +611,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {educationLevels.map((level: any) => (
+                              {educationLevels.map((level) => (
                                 <SelectItem key={level.id} value={level.id.toString()}>
                                   {level.name}
                                 </SelectItem>
@@ -645,7 +645,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {languageSkills.map((language: any) => (
+                              {languageSkills.map((language) => (
                                 <SelectItem key={language.id} value={language.id.toString()}>
                                   {language.name}
                                 </SelectItem>
@@ -700,7 +700,7 @@ export default function JobDetailsVacancyForm({ vacancyId }: JobDetailsVacancyFo
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {workSchedules.map((schedule: any) => (
+                              {workSchedules.map((schedule) => (
                                 <SelectItem key={schedule.id} value={schedule.id.toString()}>
                                   {schedule.name}
                                 </SelectItem>

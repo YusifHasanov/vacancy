@@ -1,14 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/app/store';
-import { 
+import {
   useGetJobSeekerVacancyByIdQuery,
   useGetAllJobSeekerVacanciesQuery,
   useFilterJobSeekerVacanciesMutation,
   JobSeekerVacancyFilterRequest,
   JobSeekerVacancyTableItem
 } from './jobseekerVacancyApi';
-import { 
+import {
   setVacancies,
   setSelectedVacancy,
   clearSelectedVacancy,
@@ -24,12 +24,12 @@ import { Job } from '@/types/job';
 // Adapter to transform API response to Job type for compatibility
 const transformToJob = (vacancy: JobSeekerVacancyTableItem): Job => {
   console.log("Transforming vacancy:", vacancy);
-  
+
   if (!vacancy || typeof vacancy !== 'object') {
     console.error("Invalid vacancy object:", vacancy);
     return createDefaultJob("invalid-id");
   }
-  
+
   try {
     return {
       id: vacancy.id || "unknown-id",
@@ -120,24 +120,24 @@ const transformVacancyDetails = (vacancy: any): Job => {
 // Hook for working with all vacancies using the filter endpoint
 export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
   const dispatch = useDispatch();
-  const { vacancies, loading, error, currentPage, pageSize, totalPages, totalItems, filter } = 
+  const { vacancies, loading, error, currentPage, pageSize, totalPages, totalItems, filter } =
     useSelector((state: RootState) => state.jobseekerVacancy);
-  
+
   // State for filter and pagination params
-  const [queryParams, setQueryParams] = useState({ 
-    page: initialPage, 
-    size: initialSize, 
-    sort: 'posted_at,desc' 
+  const [queryParams, setQueryParams] = useState({
+    page: initialPage,
+    size: initialSize,
+    sort: 'posted_at,desc'
   });
-  
+
   // Use filterVacancies mutation for all operations
   const [filterVacancies, { isLoading: isFiltering }] = useFilterJobSeekerVacanciesMutation();
-  
+
   // Set the initial loading state
   useEffect(() => {
     dispatch(setLoading(isFiltering));
   }, [isFiltering, dispatch]);
-  
+
   // Fetch data on initial load and when params change
   useEffect(() => {
     // Load initial data with empty filter
@@ -149,17 +149,17 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
           size: queryParams.size,
           sort: queryParams.sort
         }).unwrap();
-        
+
         console.log("API response structure:", {
           hasContent: !!result.content,
           isContentArray: Array.isArray(result.content),
           isResultArray: Array.isArray(result),
           resultType: typeof result
         });
-        
+
         // Determine what type of data we have
         let content: any[] = [];
-        
+
         if (Array.isArray(result.content)) {
           // Standard paginated response with content array
           content = result.content;
@@ -181,18 +181,18 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
           content = [];
           console.log("Unknown response format, using empty array");
         }
-        
+
         // Store the raw data directly in Redux
         dispatch(setVacancies(content));
-        
+
         // Handle pagination info
-        let paginationInfo = {
+        const paginationInfo = {
           totalPages: 0,
           totalItems: 0,
           currentPage: 0,
           pageSize: queryParams.size
         };
-        
+
         // Handle different pagination formats
         if (result.pagination) {
           // New API format
@@ -211,42 +211,42 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
           paginationInfo.totalPages = content.length > 0 ? 1 : 0;
           paginationInfo.totalItems = content.length;
         }
-        
+
         dispatch(setPagination(paginationInfo));
       } catch (err: any) {
         console.error("Error loading initial vacancies:", err);
         dispatch(setError(err.data?.message || 'Failed to load vacancies'));
       }
     };
-    
+
     loadInitialData();
   }, [queryParams.page, queryParams.size, queryParams.sort, dispatch, filterVacancies, filter]);
-  
+
   // Function to change page
   const changePage = useCallback((page: number) => {
     dispatch(setCurrentPage(page));
     setQueryParams(prev => ({ ...prev, page }));
   }, [dispatch]);
-  
+
   // Function to change page size
   const changePageSize = useCallback((size: number) => {
     dispatch(setPageSize(size));
     setQueryParams(prev => ({ ...prev, size }));
   }, [dispatch]);
-  
+
   // Function to apply filters
   const applyFilter = useCallback(async (filterData: JobSeekerVacancyFilterRequest) => {
     try {
       dispatch(setFilter(filterData));
       dispatch(setLoading(true));
-      
+
       const result = await filterVacancies({
         filter: filterData,
         page: currentPage,
         size: pageSize,
         sort: queryParams.sort
       }).unwrap();
-      
+
       console.log("Filter result structure:", {
         hasContent: !!result.content,
         hasData: !!result.data,
@@ -255,10 +255,10 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         isResultArray: Array.isArray(result),
         resultType: typeof result
       });
-      
+
       // Determine what type of data we have
       let content: any[] = [];
-      
+
       if (Array.isArray(result.content)) {
         // Standard paginated response with content array
         content = result.content;
@@ -280,18 +280,18 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         content = [];
         console.log("Unknown response format, using empty array");
       }
-      
+
       // Store the raw data directly in Redux
       dispatch(setVacancies(content));
-      
+
       // Handle pagination info
-      let paginationInfo = {
+      const paginationInfo = {
         totalPages: 0,
         totalItems: 0,
         currentPage: 0,
         pageSize: pageSize
       };
-      
+
       // Handle different pagination formats
       if (result.pagination) {
         // New API format
@@ -310,7 +310,7 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         paginationInfo.totalPages = content.length > 0 ? 1 : 0;
         paginationInfo.totalItems = content.length;
       }
-      
+
       dispatch(setPagination(paginationInfo));
     } catch (err: any) {
       const errorMessage = err.data?.message || 'Failed to filter vacancies';
@@ -319,19 +319,19 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
       dispatch(setLoading(false));
     }
   }, [dispatch, filterVacancies, currentPage, pageSize, queryParams.sort]);
-  
+
   // Function to refresh data
   const refetch = useCallback(async () => {
     try {
       dispatch(setLoading(true));
-      
+
       const result = await filterVacancies({
         filter: filter || {},
         page: currentPage,
         size: pageSize,
         sort: queryParams.sort
       }).unwrap();
-      
+
       console.log("Refetch result structure:", {
         hasContent: !!result.content,
         hasData: !!result.data,
@@ -340,10 +340,10 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         isResultArray: Array.isArray(result),
         resultType: typeof result
       });
-      
+
       // Determine what type of data we have
       let content: any[] = [];
-      
+
       if (Array.isArray(result.content)) {
         // Standard paginated response with content array
         content = result.content;
@@ -357,18 +357,18 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         // Empty or unknown format
         content = [];
       }
-      
+
       // Store the raw data
       dispatch(setVacancies(content));
-      
+
       // Handle pagination info
-      let paginationInfo = {
+      const paginationInfo = {
         totalPages: 0,
         totalItems: 0,
         currentPage: 0,
         pageSize: pageSize
       };
-      
+
       // Handle different pagination formats
       if (result.pagination) {
         // New API format
@@ -387,9 +387,9 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
         paginationInfo.totalPages = content.length > 0 ? 1 : 0;
         paginationInfo.totalItems = content.length;
       }
-      
+
       dispatch(setPagination(paginationInfo));
-      
+
       return result;
     } catch (err: any) {
       const errorMessage = err.data?.message || 'Failed to refresh vacancies';
@@ -399,15 +399,15 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
       dispatch(setLoading(false));
     }
   }, [currentPage, dispatch, filter, filterVacancies, pageSize, queryParams.sort]);
-  
+
   // For now, just return the raw vacancies array directly to avoid transformation issues
   const returnVacancies = Array.isArray(vacancies) ? vacancies : [];
-  
+
   console.log("Returning vacancies directly:", {
     count: returnVacancies.length,
     sample: returnVacancies.length > 0 ? returnVacancies[0] : null
   });
-  
+
   return {
     vacancies: returnVacancies,
     loading,
@@ -428,22 +428,22 @@ export const useJobSeekerVacancies = (initialPage = 0, initialSize = 20) => {
 export const useJobSeekerVacancy = (id?: string) => {
   const dispatch = useDispatch();
   const { selectedVacancy } = useSelector((state: RootState) => state.jobseekerVacancy);
-  
+
   // Query for vacancy details
-  const { data: apiResponse, isLoading, error, refetch } = useGetJobSeekerVacancyByIdQuery(id || '', { 
+  const { data: apiResponse, isLoading, error, refetch } = useGetJobSeekerVacancyByIdQuery(id || '', {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
-  
+
   // Update state when data changes
   useEffect(() => {
     if (apiResponse) {
       console.log("Raw vacancy detail response:", apiResponse);
-      
+
       // Handle both formats - direct and nested in data property
       const vacancyData = apiResponse.data ? apiResponse.data : apiResponse;
       console.log("Using vacancy data:", vacancyData);
-      
+
       dispatch(setSelectedVacancy(vacancyData));
     }
     return () => {
@@ -451,14 +451,14 @@ export const useJobSeekerVacancy = (id?: string) => {
       dispatch(clearSelectedVacancy());
     };
   }, [apiResponse, dispatch]);
-  
+
   // Transform the API response to Job type for compatibility
   let transformedVacancy = null;
-  
+
   if (selectedVacancy && Object.keys(selectedVacancy).length > 0) {
     try {
       console.log("Transforming vacancy with structure:", Object.keys(selectedVacancy));
-      
+
       // Create a compatible job object from the API data
       transformedVacancy = {
         id: selectedVacancy.id || "unknown-id",
@@ -474,34 +474,34 @@ export const useJobSeekerVacancy = (id?: string) => {
         location: '',
         postingType: '',
         description: {
-          duties: selectedVacancy.description?.responsibilities || 
+          duties: selectedVacancy.description?.responsibilities ||
                  selectedVacancy.responsibilities || [],
-          education: selectedVacancy.description?.education || 
+          education: selectedVacancy.description?.education ||
                     selectedVacancy.education || [],
-          experience: selectedVacancy.description?.experience || 
+          experience: selectedVacancy.description?.experience ||
                      selectedVacancy.experience || [],
-          requiredSkills: selectedVacancy.description?.requiredSkills || 
+          requiredSkills: selectedVacancy.description?.requiredSkills ||
                          selectedVacancy.required_skills || [],
-          preferredSkills: selectedVacancy.description?.preferredSkills || 
+          preferredSkills: selectedVacancy.description?.preferredSkills ||
                           selectedVacancy.preferred_skills || []
         },
-        applicationDeadline: new Date(selectedVacancy.applicationDeadline || 
+        applicationDeadline: new Date(selectedVacancy.applicationDeadline ||
                                     selectedVacancy.application_deadline || Date.now()),
         category: selectedVacancy.categoryName || selectedVacancy.category_name || '',
         schedule: ''
       };
-      
+
       console.log("Transformed vacancy:", transformedVacancy);
     } catch (error) {
       console.error("Error transforming vacancy details:", error);
       transformedVacancy = null;
     }
   }
-  
+
   return {
     vacancy: transformedVacancy,
     loading: isLoading,
     error,
     refetch
   };
-}; 
+};
