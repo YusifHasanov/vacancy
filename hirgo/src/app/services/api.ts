@@ -1,4 +1,4 @@
-import {createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
 
 // Define the base URL for your API
@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/a
 // Base query instance
 const baseQuery = fetchBaseQuery({
     baseUrl, // Use the defined base URL
-    prepareHeaders: (headers, {endpoint}) => {
+    prepareHeaders: (headers, { endpoint }) => {
         // Don't add auth token for endpoints that don't require authentication
         const noAuthEndpoints = [
             'getAllCategories',
@@ -48,6 +48,11 @@ const handleAuthFailed = () => {
     // Clear tokens
     Cookies.remove('token');
     Cookies.remove('refreshToken');
+
+    // Redirect to login page
+    if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+    }
 };
 
 // Wrapper for baseQuery that handles automatic token refresh
@@ -58,6 +63,8 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
     // Try the initial query
     const result = await baseQuery(args, api, extraOptions);
+
+
 
     // If we get a 401 Unauthorized response, try to refresh the token
     if (result.error && result.error.status === 401) {
@@ -90,8 +97,8 @@ const baseQueryWithReauth: BaseQueryFn<
                 console.log('Token refresh successful, updating tokens and retrying request');
 
                 // Store the new tokens
-                Cookies.set('token', refreshData.data.accessToken, {expires: 7});
-                Cookies.set('refreshToken', refreshData.data.refreshToken, {expires: 30});
+                Cookies.set('token', refreshData.data.accessToken, { expires: 7 });
+                Cookies.set('refreshToken', refreshData.data.refreshToken, { expires: 30 });
 
                 // Retry the original request with the new token
                 return baseQuery(args, api, extraOptions);

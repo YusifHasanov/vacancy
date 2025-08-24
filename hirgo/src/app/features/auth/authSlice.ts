@@ -8,6 +8,7 @@ interface AuthResponse {
     accessToken: string;
     refreshToken: string;
     idToken: string;
+    userRole: string;
   };
   status: {
     code: string;
@@ -71,6 +72,7 @@ export const authApi = api.injectEndpoints({
         if (response.status.code === 'SUCCESS' && response.data) {
           Cookies.set('token', response.data.accessToken, { expires: 7 });
           Cookies.set('refreshToken', response.data.refreshToken, { expires: 30 });
+          Cookies.set('userRole', response.data.userRole, { expires: 30 });
         }
         return response;
       },
@@ -87,6 +89,7 @@ export const authApi = api.injectEndpoints({
           console.log(response.data)
           Cookies.set('token', response.data.accessToken, { expires: 7 });
           Cookies.set('refreshToken', response.data.refreshToken, { expires: 30 });
+          Cookies.set('userRole', response.data.userRole, { expires: 30 });
         }
         return response;
       },
@@ -98,15 +101,15 @@ export const authApi = api.injectEndpoints({
         body: credentials,
       }),
       transformResponse: (response: AuthResponse) => {
-        console.log("response", response);
         // Store tokens in cookies if login is successful
         if (response.status.code === 'SUCCESS' && response.data) {
-          console.log(response.data)
-          console.log(response.data.accessToken)
-          console.log(response.data.refreshToken)
-          console.log(response.data.idToken)
+          // console.log(response.data)
+          // console.log(response.data.accessToken)
+          // console.log(response.data.refreshToken)
+          // console.log(response.data.idToken)
           Cookies.set('token', response.data.accessToken, { expires: 7 });
           Cookies.set('refreshToken', response.data.refreshToken, { expires: 30 });
+          Cookies.set('userRole', response.data.userRole, { expires: 30 });
         }
         return response;
       },
@@ -131,6 +134,7 @@ export const authApi = api.injectEndpoints({
         if (response.status.code === 'SUCCESS' && response.data) {
           Cookies.set('token', response.data.accessToken, { expires: 7 });
           Cookies.set('refreshToken', response.data.refreshToken, { expires: 30 });
+          Cookies.set('userRole', response.data.userRole, { expires: 30 });
         }
         return response;
       },
@@ -143,6 +147,7 @@ export const authApi = api.injectEndpoints({
           // Clear tokens and set auth state to logged out
           Cookies.remove('token');
           Cookies.remove('refreshToken');
+          Cookies.remove('userRole');
           dispatch(setAuthenticated(false));
         }
       },
@@ -172,6 +177,7 @@ export const authApi = api.injectEndpoints({
           console.log('Clearing client-side tokens and auth state.');
           Cookies.remove('token');
           Cookies.remove('refreshToken');
+          Cookies.remove('userRole');
           dispatch(setAuthenticated(false));
           // Optionally, you might want to dispatch api.util.resetApiState()
           // to clear RTK Query cache after logout.

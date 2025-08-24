@@ -6,47 +6,12 @@ import {useState} from 'react'
 
 import {Button} from "@/components/ui/button"
 import {Card, CardContent} from "@/components/ui/card"
+import {templates} from "@/app/profile/cvmaker/TemplateSelectionModal";
 
 export function CvCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0)
 
-    const templates = [
-        {
-            id: 1,
-            name: "Rosewood",
-            type: "Two-Column Modern",
-            image: "/img.png?height=600&width=400",
-            color: "bg-[#4A2545]"
-        },
-        {
-            id: 2,
-            name: "Aqua Splash",
-            type: "Multi-Column Clean",
-            image: "/img.png?height=600&width=400",
-            color: "bg-[#2A9D8F]"
-        },
-        {
-            id: 3,
-            name: "Atlantic Blue",
-            type: "Multi-Column Professional",
-            image: "/img.png?height=600&width=400",
-            color: "bg-[#264653]"
-        },
-        {
-            id: 4,
-            name: "Minimal",
-            type: "Single Column Classic",
-            image: "/img.png?height=600&width=400",
-            color: "bg-[#E76F51]"
-        },
-        {
-            id: 5,
-            name: "Executive",
-            type: "Two-Column Elite",
-            image: "/img.png?height=600&width=400",
-            color: "bg-[#2B2D42]"
-        }
-    ]
+
 
     const next = () => {
         setCurrentIndex((prevIndex) =>
@@ -136,9 +101,9 @@ export function CvCarousel() {
                                                         </Button>
                                                     </div>
                                                 )}
-                                                <div className={`h-full ${template.color}`}>
+                                                <div className={`h-full  `}>
                                                     <img
-                                                        src={template.image}
+                                                        src={template.previewImage}
                                                         alt={`${template.name} CV template`}
                                                         className="h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
                                                     />
@@ -152,7 +117,7 @@ export function CvCarousel() {
                                                 className="mt-4 text-center"
                                             >
                                                 <h3 className="font-semibold">{template.name}</h3>
-                                                <p className="text-sm text-muted-foreground">{template.type}</p>
+                                                {/*<p className="text-sm text-muted-foreground">{template.type}</p>*/}
                                             </motion.div>
                                         )}
                                     </motion.div>

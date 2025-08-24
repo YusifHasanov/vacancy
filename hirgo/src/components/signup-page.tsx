@@ -21,6 +21,7 @@ import {useRegisterCompanyMutation, useRegisterJobSeekerMutation} from "@/app/fe
 import {useDispatch} from 'react-redux'
 import {setAuthenticated} from '@/app/features/auth/authSlice'
 import {useRouter} from 'next/navigation'
+import {cn} from "@/lib/utils";
 
 // Define a simple schema for the initial state (just the user type selection)
 const userTypeSchema = z.object({
@@ -362,58 +363,7 @@ export default function SignupPage() {
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="dateOfBirth" className="text-sm font-medium">
-                                                    Date of Birth
-                                                </Label>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={`w-full justify-start text-left font-normal rounded-lg h-11 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                                                                !jobSeekerForm.watch("dateOfBirth") ? "text-muted-foreground" : ""
-                                                            }`}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                            {jobSeekerForm.watch("dateOfBirth") ? (
-                                                                format(new Date(jobSeekerForm.watch("dateOfBirth")), "PPP")
-                                                            ) : (
-                                                                <span>Select your date of birth</span>
-                                                            )}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0" align="start">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={
-                                                                jobSeekerForm.watch("dateOfBirth")
-                                                                    ? new Date(jobSeekerForm.watch("dateOfBirth"))
-                                                                    : undefined
-                                                            }
-                                                            onSelect={(date) => {
-                                                                if (date) {
-                                                                    // Fix timezone issue by using the date directly
-                                                                    const year = date.getFullYear()
-                                                                    const month = String(date.getMonth() + 1).padStart(2, "0")
-                                                                    const day = String(date.getDate()).padStart(2, "0")
-                                                                    const formattedDate = `${year}-${month}-${day}`
-
-                                                                    jobSeekerForm.setValue("dateOfBirth", formattedDate, {
-                                                                        shouldValidate: true,
-                                                                    })
-                                                                }
-                                                            }}
-                                                            disabled={(date) => {
-                                                                // Disable dates that would make the user younger than 18
-                                                                const eighteenYearsAgo = new Date()
-                                                                eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18)
-                                                                return date > eighteenYearsAgo || date > new Date()
-                                                            }}
-                                                            initialFocus
-                                                            fromYear={1920}
-                                                            toYear={new Date().getFullYear() - 18}
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <DateOfBirthPicker form={jobSeekerForm}/>
                                                 {jobSeekerForm.formState.errors.dateOfBirth && (
                                                     <p className="text-sm text-red-500 mt-1">
                                                         {jobSeekerForm.formState.errors.dateOfBirth?.message}
@@ -586,3 +536,29 @@ export default function SignupPage() {
     )
 }
 
+
+export function DateOfBirthPicker({ form } : any) {
+    // 18 yaşından küçükleri engellemek için maksimum tarihi belirleyelim
+    const eighteenYearsAgo = new Date();
+    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+    const maxDate = eighteenYearsAgo.toISOString().split("T")[0]; // "YYYY-MM-DD" formatı
+
+    return (
+        <div className="space-y-2">
+            <Label htmlFor="dateOfBirth">Doğum Tarihi</Label>
+            <input
+                type="date"
+                id="dateOfBirth"
+                {...form.register("dateOfBirth")} // react-hook-form ile kaydet
+                className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                max={maxDate} // Gelecekteki ve 18 yaşından küçük tarihleri engeller
+                min="1920-01-01" // Minimum bir tarih belirleyelim
+            />
+            {form.formState.errors.dateOfBirth && (
+                <p className="text-sm font-medium text-red-500">
+                    {form.formState.errors.dateOfBirth.message}
+                </p>
+            )}
+        </div>
+    );
+}

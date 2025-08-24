@@ -9,7 +9,7 @@ interface TemplateSelectionModalProps {
     onSelect: (uiType: 'ui1' | 'ui2' | 'ui3') => void;
 }
 
-const templates = [
+export const templates = [
     {
         id: 'ui1',
         name: 'Dark Sidebar',
