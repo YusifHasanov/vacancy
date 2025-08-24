@@ -29,6 +29,7 @@ public class TokenService {
 
     // Token expiry durations
     private static final long ACCESS_TOKEN_EXPIRY = 3600L; // 1 hour
+//    private static final long ACCESS_TOKEN_EXPIRY = 60L; // 1 minute
     private static final long REFRESH_TOKEN_EXPIRY = 604800L; // 7 days
     private static final long ID_TOKEN_EXPIRY = 3600L; // 1 hour
 
@@ -67,7 +68,7 @@ public class TokenService {
         String idToken = generateIdToken(user, now);
 
         log.info("Generated all tokens for user: {}", user.getUsername());
-        return new TokenResponse(accessToken, refreshToken, idToken);
+        return new TokenResponse(accessToken, refreshToken, idToken, user.getRole());
     }
 
     /**
@@ -97,7 +98,7 @@ public class TokenService {
         String idToken = generateIdToken(user, now);
 
         log.info("Generated all tokens for user 2   : {}", authentication.getName());
-        return new TokenResponse(accessToken, refreshToken, idToken);
+        return new TokenResponse(accessToken, refreshToken, idToken, user.getRole());
     }
 
     /**

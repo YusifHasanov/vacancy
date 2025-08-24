@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var source = new org.springframework.web.cors.CorsConfiguration();
                     source.setAllowCredentials(true);
-                    source.addAllowedOrigin("https://fit2job.com"); // Allow all origins
+                    source.addAllowedOrigin("http://localhost:3000"); // Allow all origins
                     source.addAllowedHeader("*"); // Allow all headers
                     source.addAllowedMethod("*"); // Allow all methods
                     return source;

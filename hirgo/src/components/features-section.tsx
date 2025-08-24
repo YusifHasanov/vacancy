@@ -4,10 +4,13 @@ import { motion } from 'framer-motion'
 import { Briefcase, FileText, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation';
+import Cookies from "js-cookie";
 
 export function FeaturesSection() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const router = useRouter()
+  const userRole = Cookies.get('userRole')
+
 
   const features = [
     {
@@ -15,25 +18,33 @@ export function FeaturesSection() {
       description: "Müxtəlif sənaye sahələrində iş imkanlarının geniş siyahısına nəzər salın",
       icon: Briefcase,
       color: "from-purple-500/20 to-blue-500/20",
-      path: "/vacancies"
+      path: "/vacancies",
+      mustRole: null
     },
     {
       title: "İş elanı paylaş",
       description: "Mükəmməl namizədləri tapmaq üçün iş siyahılarınızı asanlıqla yerləşdirin və idarə edin",
       icon: PlusCircle,
       color: "from-emerald-500/20 to-teal-500/20",
-      path: "/add-vacancy"
+      path: "/dashboard/vacancies/new",
+      mustRole: "ROLE_COMPANY"
     },
     {
       title: "CV yarat",
       description: "İntuitiv CV qurucu alətimizlə peşəkar CV yaradın",
       icon: FileText,
       color: "from-orange-500/20 to-red-500/20",
-      path: "/profile/cvmaker"
+      path: "/profile/cvmaker",
+      mustRole: null
     }
   ]
 
-  const handleFeatureClick = (path: string) => {
+  const handleFeatureClick = (path: string, mustRole: string | null) => {
+    // If mustRole is not null and userRole doesn't match, don't navigate
+    console.log(mustRole, userRole)
+    if (mustRole !== null && userRole !== mustRole) {
+      return
+    }
     router.push(path)
   }
 
@@ -60,14 +71,22 @@ export function FeaturesSection() {
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5, delay: index * 0.1}}
-                    onHoverStart={() => setHoveredCard(index)}
+                    onHoverStart={() => {
+                      if (feature.mustRole === null || userRole === feature.mustRole) {
+                        setHoveredCard(index)
+                      }
+                    }}
                     onHoverEnd={() => setHoveredCard(null)}
-                    onClick={() => handleFeatureClick(feature.path)}
+                    onClick={() => handleFeatureClick(feature.path, feature.mustRole)}
                     className="relative"
                 >
                   <div
                       className={`group relative overflow-hidden rounded-3xl bg-gradient-to-b ${feature.color} p-8 h-full
-                  transition-all duration-500 hover:shadow-2xl hover:translate-y-[-4px] cursor-pointer`}
+                  transition-all duration-500 ${
+                    feature.mustRole !== null && userRole !== feature.mustRole 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : 'hover:shadow-2xl hover:translate-y-[-4px] cursor-pointer'
+                  }`}
                   >
                     {/* Animated background gradient */}
                     <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-transparent opacity-0

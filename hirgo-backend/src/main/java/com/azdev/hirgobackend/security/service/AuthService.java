@@ -60,7 +60,6 @@ public class AuthService {
             
             // Generate tokens
             TokenResponse tokenResponse = tokenService.generateTokens(authentication, user);
-            
             log.info("User logged in successfully: {}", authentication.getName());
             return tokenResponse;
         } catch (Exception e) {
