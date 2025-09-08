@@ -26,15 +26,17 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation";
+import { useGetCompanyDashboardQuery } from "@/app/features/dashboard/dashboardApi";
 
 export default function DashboardPage() {
     const router = useRouter();
+    const { data, isLoading, refetch } = useGetCompanyDashboardQuery();
     return (
         <DashboardLayout>
             <div className="flex items-center justify-between space-y-2">
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                 <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm" className="h-9">
+                    <Button variant="outline" size="sm" className="h-9" onClick={() => refetch()}>
                         <RefreshCcw className="mr-2 h-4 w-4" />
                         Refresh
                     </Button>
@@ -54,7 +56,7 @@ export default function DashboardPage() {
                             <Briefcase className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">24</div>
+                            <div className="text-2xl font-bold">{isLoading ? "..." : (data?.metrics?.totalVacancies ?? 0)}</div>
                             <p className="text-xs text-muted-foreground">+2 from last month</p>
                         </CardContent>
                     </Card>
@@ -64,7 +66,7 @@ export default function DashboardPage() {
                             <Filter className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">12</div>
+                            <div className="text-2xl font-bold">{isLoading ? "..." : (data?.metrics?.activeVacancies ?? 0)}</div>
                             <p className="text-xs text-muted-foreground">+1 from last month</p>
                         </CardContent>
                     </Card>
@@ -74,7 +76,7 @@ export default function DashboardPage() {
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">156</div>
+                            <div className="text-2xl font-bold">{isLoading ? "..." : (data?.metrics?.totalApplicants ?? 0)}</div>
                             <p className="text-xs text-muted-foreground">+43 from last month</p>
                         </CardContent>
                     </Card>
@@ -84,7 +86,7 @@ export default function DashboardPage() {
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">32</div>
+                            <div className="text-2xl font-bold">{isLoading ? "..." : (data?.metrics?.newApplicants ?? 0)}</div>
                             <p className="text-xs text-muted-foreground">+18% from last week</p>
                         </CardContent>
                     </Card>
@@ -94,7 +96,7 @@ export default function DashboardPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Recent Applicants</CardTitle>
-                        <CardDescription>You received 32 applicants this week</CardDescription>
+                        <CardDescription>{isLoading ? "Loading..." : `You received ${data?.metrics?.newApplicants ?? 0} applicants this week`}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="rounded-md border">
@@ -110,23 +112,7 @@ export default function DashboardPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {[
-                                            { name: "Emma Wilson", position: "Senior Developer", date: "Mar 21, 2023", status: "Review" },
-                                            {
-                                                name: "Michael Brown",
-                                                position: "Marketing Specialist",
-                                                date: "Mar 20, 2023",
-                                                status: "Screening",
-                                            },
-                                            {
-                                                name: "Olivia Davis",
-                                                position: "Product Designer",
-                                                date: "Mar 19, 2023",
-                                                status: "Interview",
-                                            },
-                                            { name: "James Taylor", position: "Data Analyst", date: "Mar 18, 2023", status: "New" },
-                                            { name: "Sophia Martinez", position: "Content Writer", date: "Mar 17, 2023", status: "Review" },
-                                        ].map((application, i) => (
+                                        {(data?.recentApplicants ?? []).map((application, i) => (
                                             <tr
                                                 key={i}
                                                 className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
@@ -135,30 +121,19 @@ export default function DashboardPage() {
                                                     <div className="flex items-center">
                                                         <Avatar className="h-8 w-8 mr-2">
                                                             <AvatarFallback>
-                                                                {application.name
-                                                                    .split(" ")
-                                                                    .map((n) => n[0])
-                                                                    .join("")}
+                                                                {application.fullName?.split(" ")?.map((n: string) => n[0])?.join("")}
                                                             </AvatarFallback>
                                                         </Avatar>
-                                                        {application.name}
+                                                        {application.fullName}
                                                     </div>
                                                 </td>
-                                                <td className="p-4 align-middle">{application.position}</td>
-                                                <td className="p-4 align-middle">{application.date}</td>
+                                                <td className="p-4 align-middle">—</td>
+                                                <td className="p-4 align-middle">{new Date(application.createdAt).toLocaleDateString()}</td>
                                                 <td className="p-4 align-middle">
                                                     <Badge
-                                                        variant={
-                                                            application.status === "New"
-                                                                ? "default"
-                                                                : application.status === "Review"
-                                                                    ? "secondary"
-                                                                    : application.status === "Screening"
-                                                                        ? "outline"
-                                                                        : "default"
-                                                        }
+                                                        variant={"outline"}
                                                     >
-                                                        {application.status}
+                                                        New
                                                     </Badge>
                                                 </td>
                                                 <td className="p-4 align-middle">
@@ -226,16 +201,11 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
-                                {[
-                                    { title: "Senior Frontend Developer", department: "Engineering", applicants: 28, status: "Active" },
-                                    { title: "Marketing Manager", department: "Marketing", applicants: 15, status: "Active" },
-                                    { title: "UX/UI Designer", department: "Design", applicants: 34, status: "Closing Soon" },
-                                    { title: "Data Analyst", department: "Analytics", applicants: 12, status: "Draft" },
-                                ].map((vacancy, i) => (
+                                {(data?.vacancyOverview ?? []).map((vacancy, i) => (
                                     <div key={i} className="flex items-center justify-between rounded-lg border p-3">
                                         <div>
                                             <p className="font-medium">{vacancy.title}</p>
-                                            <p className="text-sm text-muted-foreground">{vacancy.department}</p>
+                                            <p className="text-sm text-muted-foreground">&nbsp;</p>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <div className="text-sm text-muted-foreground">{vacancy.applicants} applicants</div>
@@ -243,9 +213,7 @@ export default function DashboardPage() {
                                                 variant={
                                                     vacancy.status === "Active"
                                                         ? "default"
-                                                        : vacancy.status === "Closing Soon"
-                                                            ? "destructive"
-                                                            : "outline"
+                                                        : "outline"
                                                 }
                                             >
                                                 {vacancy.status}

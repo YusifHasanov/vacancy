@@ -50,12 +50,6 @@ export function DashboardSidebar() {
       icon: PlusCircle,
       isActive: pathname === "/dashboard/vacancies/new",
     },
-    {
-      title: "Profile",
-      href: "/dashboard/profile",
-      icon: User,
-      isActive: pathname === "/dashboard/profile",
-    },
   ]
 
   return (
