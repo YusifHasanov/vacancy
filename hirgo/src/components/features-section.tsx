@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 export function FeaturesSection() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const router = useRouter()
-  const userRole = Cookies.get('userRole')
+  const userRole = Cookies.get('userRole') || null
 
 
   const features = [
@@ -42,7 +42,7 @@ export function FeaturesSection() {
   const handleFeatureClick = (path: string, mustRole: string | null) => {
     // If mustRole is not null and userRole doesn't match, don't navigate
     console.log(mustRole, userRole)
-    if (mustRole !== null && userRole !== mustRole) {
+    if (mustRole !== null && userRole && userRole !== mustRole) {
       return
     }
     router.push(path)
@@ -72,7 +72,7 @@ export function FeaturesSection() {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5, delay: index * 0.1}}
                     onHoverStart={() => {
-                      if (feature.mustRole === null || userRole === feature.mustRole) {
+                      if (feature.mustRole === null || !userRole || userRole === feature.mustRole) {
                         setHoveredCard(index)
                       }
                     }}
@@ -83,7 +83,7 @@ export function FeaturesSection() {
                   <div
                       className={`group relative overflow-hidden rounded-3xl bg-gradient-to-b ${feature.color} p-8 h-full
                   transition-all duration-500 ${
-                    feature.mustRole !== null && userRole !== feature.mustRole 
+                    feature.mustRole !== null && userRole && userRole !== feature.mustRole 
                       ? 'opacity-50 cursor-not-allowed' 
                       : 'hover:shadow-2xl hover:translate-y-[-4px] cursor-pointer'
                   }`}
